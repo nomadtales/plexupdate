@@ -25,10 +25,11 @@ token=$(cat "$plexPrefFolder"/Preferences.xml | grep -oP 'PlexOnlineToken="\K[^"
 url=$(echo "https://plex.tv/api/downloads/5.json?channel=plexpass&X-Plex-Token=$token")
 jq=$(curl -s ${url})
 
-newversion=$(echo $jq | jq -r .nas.Synology.version)
+# use sed to strip anything after the hythen
+newversion=$(echo $jq | jq -r .nas.Synology.version | sed -E  's/(.*)-.*/\1/')
 echo `date +"%Y-%m-%d %T"` - New Version: $newversion
 
-curversion=$(synopkg version "Plex Media Server")
+curversion=$(synopkg version "Plex Media Server" | sed -E  's/(.*)-.*/\1/')
 echo `date +"%Y-%m-%d %T"` - Currrent Version: $curversion
 
 # compare version numbers
