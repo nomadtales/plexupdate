@@ -14,8 +14,8 @@ tmpFolder="/tmp/plex"
 waitPeriod=30
 
 # stop plex
-echo `date +"%Y-%m-%d %T"` - Stopping Plex Media Server
-/usr/syno/bin/synopkg stop "Plex Media Server"
+# echo `date +"%Y-%m-%d %T"` - Stopping Plex Media Server
+# /usr/syno/bin/synopkg stop "Plex Media Server"
 
 # create temp folder
 mkdir -p $tmpFolder/ > /dev/null 2>&1
