@@ -13,10 +13,6 @@ plexPrefFolder="/volume1/Plex/Library/Application Support/Plex Media Server"
 tmpFolder="/tmp/plex"
 waitPeriod=30
 
-# stop plex
-# echo `date +"%Y-%m-%d %T"` - Stopping Plex Media Server
-# /usr/syno/bin/synopkg stop "Plex Media Server"
-
 # create temp folder
 mkdir -p $tmpFolder/ > /dev/null 2>&1
 
@@ -37,12 +33,14 @@ if [ "$newversion" != "$curversion" ]
 
 # new version available
 then
-    # download new version
-    echo `date +"%Y-%m-%d %T"` - New Version Available
+
+    # build download url
+    echo `date +"%Y-%m-%d %T"` - New Version Available - Building download url
     /usr/syno/bin/synonotify PKGHasUpgrade '{"[%HOSTNAME%]": $(hostname), "[%OSNAME%]": "Synology", "[%PKG_HAS_UPDATE%]": "Plex", "[%COMPANY_NAME%]": "Synology"}'
     CPU=$(uname -m)
     url=$(echo "${jq}" | jq -r '.nas.Synology.releases[] | select(.build=="linux-'"${CPU}"'") | .url')
 
+    # download new version
     echo `date +"%Y-%m-%d %T"` - Downloading New Version
     /bin/wget $url -P $tmpFolder/
 
@@ -50,20 +48,21 @@ then
     echo `date +"%Y-%m-%d %T"` - Installing New Version
     /usr/syno/bin/synopkg install $tmpFolder/*.spk
 
+    # wait for a period
     echo `date +"%Y-%m-%d %T"` - Wait $waitPeriod seconds
     sleep $waitPeriod
 
-    # clean up
+    # clean up files
     echo `date +"%Y-%m-%d %T"` - Removing Temp Files
     rm -rf $tmpFolder/*
 
-# no update
+    # start plex
+    echo `date +"%Y-%m-%d %T"` - Starting Plex Media Server
+    /usr/syno/bin/synopkg start "Plex Media Server"
+
+# no new version
 else
     echo `date +"%Y-%m-%d %T"` - No New Version
 fi
-
-# restart plex
-echo `date +"%Y-%m-%d %T"` - Starting Plex Media Server
-/usr/syno/bin/synopkg start "Plex Media Server"
 
 exit
