@@ -26,11 +26,11 @@ url=$(echo "https://plex.tv/api/downloads/5.json?channel=plexpass&X-Plex-Token=$
 jq=$(curl -s ${url})
 
 # use sed to strip anything after the hythen
-curversion=$(synopkg version "Plex Media Server" | sed -E 's/(.*)-.*/\1/')
-echo `date +"%Y-%m-%d %T"` - Currrent Version: $curversion
-
 newversion=$(echo $jq | jq -r .nas.Synology.version | sed -E 's/(.*)-.*/\1/')
 echo `date +"%Y-%m-%d %T"` - New Version: $newversion
+
+curversion=$(synopkg version "Plex Media Server" | sed -E 's/(.*)-.*/\1/')
+echo `date +"%Y-%m-%d %T"` - Current Version: $curversion
 
 # compare version numbers
 if [ "$newversion" != "$curversion" ]
