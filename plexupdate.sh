@@ -22,7 +22,7 @@ url=$(echo "https://plex.tv/api/downloads/5.json?channel=plexpass&X-Plex-Token=$
 jq=$(curl -s ${url})
 
 # use sed to strip anything after the hythen
-newversion=$(echo $jq | jq -r .nas.Synology.version | sed -E 's/(.*)-.*/\1/')
+newversion=$(echo $jq | jq -r '.nas."Synology (DSM 7)".version' | sed -E 's/(.*)-.*/\1/')
 echo `date +"%Y-%m-%d %T"` - New Version: $newversion
 
 curversion=$(synopkg version "PlexMediaServer" | sed -E 's/(.*)-.*/\1/')
@@ -38,7 +38,7 @@ then
     echo `date +"%Y-%m-%d %T"` - New Version Available - Building download url
     /usr/syno/bin/synonotify PKGHasUpgrade '{"[%HOSTNAME%]": $(hostname), "[%OSNAME%]": "Synology", "[%PKG_HAS_UPDATE%]": "Plex", "[%COMPANY_NAME%]": "Synology"}'
     CPU=$(uname -m)
-    url=$(echo "${jq}" | jq -r '.nas.Synology.releases[] | select(.build=="linux-'"${CPU}"'") | .url')
+    url=$(echo "${jq}" | jq -r '.nas."Synology (DSM 7)".releases[] | select(.build=="linux-'"${CPU}"'") | .url')
 
     # download new version
     echo `date +"%Y-%m-%d %T"` - Downloading New Version
