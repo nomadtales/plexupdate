@@ -9,7 +9,7 @@
 # https://github.com/martinorob/plexupdate/
 
 # variables
-plexPrefFolder="/volume1/Plex/Library/Application Support/Plex Media Server"
+plexPrefFolder="/volume1/PlexMediaServer/AppData/Plex Media Server"
 tmpFolder="/tmp/plex"
 waitPeriod=30
 
@@ -25,7 +25,7 @@ jq=$(curl -s ${url})
 newversion=$(echo $jq | jq -r .nas.Synology.version | sed -E 's/(.*)-.*/\1/')
 echo `date +"%Y-%m-%d %T"` - New Version: $newversion
 
-curversion=$(synopkg version "Plex Media Server" | sed -E 's/(.*)-.*/\1/')
+curversion=$(synopkg version "PlexMediaServer" | sed -E 's/(.*)-.*/\1/')
 echo `date +"%Y-%m-%d %T"` - Current Version: $curversion
 
 # compare version numbers
